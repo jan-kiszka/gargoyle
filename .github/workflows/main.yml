@@ -1,0 +1,19 @@
+name: CI
+
+on: [push]
+
+jobs:
+  mvebu-default:
+    name: Image build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        run: make mvebu.default FULL_BUILD=true V=0
+      - name: Upload image
+        uses: actions/upload-artifact@v2
+        with:
+          name: mvebu
+          path: |
+            images/mvebu/gargoyle*
