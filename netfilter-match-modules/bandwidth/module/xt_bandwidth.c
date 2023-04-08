@@ -1216,7 +1216,7 @@ static bool bandwidth_mt4(const struct sk_buff *skb, struct xt_action_param *par
 	 * number crunching so we shouldn't 
 	 * already be locked.
 	 */
-	now = get_seconds();
+	now = ktime_get_real_seconds();
 	
 
 	if(now != last_local_mw_update )
@@ -1455,7 +1455,7 @@ static bool bandwidth_mt6(const struct sk_buff *skb, struct xt_action_param *par
 	 * number crunching so we shouldn't 
 	 * already be locked.
 	 */
-	now = get_seconds();
+	now = ktime_get_real_seconds();
 	
 
 	if(now != last_local_mw_update )
@@ -2002,7 +2002,7 @@ static int xt_bandwidth_get_ctl(struct sock *sk, int cmd, void *user, int *len)
 	uint64_t* reset_time;
 	unsigned char* reset_is_constant_interval;
 	uint32_t  current_output_index;
-	ktime_t now = get_seconds();
+	ktime_t now = ktime_get_real_seconds();
 	check_for_timezone_shift(now, 0);
 	check_for_backwards_time_shift(now);
 	now = now -  local_seconds_west;  /* Adjust for local timezone */
@@ -2477,7 +2477,7 @@ static int xt_bandwidth_set_ctl(struct sock *sk, int cmd, sockptr_t arg, u_int32
 	info_and_maps* iam;
 	uint32_t buffer_index;
 	uint32_t next_ip_index;
-	ktime_t now = get_seconds();
+	ktime_t now = ktime_get_real_seconds();
 	check_for_timezone_shift(now, 0);
 	check_for_backwards_time_shift(now);
 	now = now -  local_seconds_west;  /* Adjust for local timezone */
@@ -2785,7 +2785,7 @@ static int checkentry(const struct xt_mtchk_param *par, int family)
 
 			if(info->reset_interval != BANDWIDTH_NEVER)
 			{
-				ktime_t now = get_seconds();
+				ktime_t now = ktime_get_real_seconds();
 				if(now != last_local_mw_update )
 				{
 					check_for_timezone_shift(now, 1);
@@ -3052,7 +3052,7 @@ static int __init init(void)
 	bandwidth_record_max = get_bw_record_max();
 	local_minutes_west = old_minutes_west = sys_tz.tz_minuteswest;
 	local_seconds_west = local_minutes_west*60;
-	last_local_mw_update = get_seconds();
+	last_local_mw_update = ktime_get_real_seconds();
 	if(local_seconds_west > last_local_mw_update)
 	{
 		/* we can't let adjusted time be < 0 -- pretend timezone is still UTC */
